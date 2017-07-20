@@ -53,15 +53,17 @@ namespace SandwichShopMVC.Controllers
         }
 
         // GET: Menu/Create
-        public ActionResult Create()
+        public ActionResult Create(int? id)
         {
-            /*
+            // This is using the Tuple method of connecting multiple models 
+            // in a single view
+
             Menu menu = db.Menu.Find(id);
-            List<Ingredients> ingredients = db.Ingredients.ToList();
-            var tuple = new Tuple<List<Ingredients>, Menu>(ingredients, menu);
-            */
+            // List<Ingredients> ingredients = db.Ingredients.ToList();
+            // var tuple = new Tuple<List<Ingredients>, Menu>(ingredients, menu);
+
+            return View(menu);
             
-            return View();
         }
 
 

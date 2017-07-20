@@ -1,65 +1,83 @@
-﻿@model SandwichShopMVC.Models.Menu
+﻿@model SandwichShopMVC.Models.ViewModel
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href= "//cdn.jsdelivr.net/chosen/1.1.0/chosen.css" />
-<script src="//cdn.jsdelivr.net/chosen/1.1.0/chosen.jquery.js"></script>
+<!--This is for using ViewData to express multiple models in a single view-->
 @*
-<h2>Create</h2>
+    @{
+        IEnumerable<Ingredients> ingredients = ViewData["Ingredients"] as IEnumerable<Ingredients>;
+        IEnumerable<Menu> menu = ViewData["Menu"] as IEnumerable<Menu>;
+    }
+*@
+
+<!--This is for JavaScript functionality for Ingredient select methods-->
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/chosen/1.1.0/chosen.css" />
+<script src="//cdn.jsdelivr.net/chosen/1.1.0/chosen.jquery.js"></script>
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Menu</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<!--This is all the code for labels and dropdown menu functionality-->
+@*
+    <h2>Create</h2>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Menu</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Menu.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Menu.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Menu.Name, "", new { @class = "text-danger" })
+                </div>
             </div>
         </div>
 
         <!--Where the dropdown menu begins-->
-        
-        <div class="form-group">
-            @Html.LabelFor(model => model.Ingredients, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
 
-                @Html.DropDownListFor(m => m.Item1,
-                                    new SelectList(Model.Item1, "Id", "Name"),
-                                    "Choose a Category...",
-                                    new
-                                    {
-                                        id = "CategoryId",
-                                        multiple = "",
-                                        @class = "chzn-select srs-select search-dropdown",
-                                        data_placeholder = "Choose a Category..."
-                                    })
-                @Html.DropDownListFor(m => m.Item1, new SelectList(Model.Item1, "ID", "Name"), new {  @id = "CategoryId" , @class = "form -control chosen-select", @multiple = "true" })
-            </div>
-        </div>
-        
+            <div class="form-group">
+                @Html.LabelFor(model => model.Menu.Ingredients, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
 
-             
-}
 
-<script>
-  //  $('.chosen-select').chosen();
-    $(document).ready(function () {
+                    @Html.DropDownListFor(m => m.Ingredients,
+                                        new SelectList(Model.Ingredients.ToList(), "ID", "Name"),
+                                        "Choose a Category...",
+                                        new
+                                        {
+                                            id = "CategoryId",
+                                            multiple = "",
+                                            @class = "chzn-select srs-select search-dropdown",
+                                            data_placeholder = "Select Your Ingredients..."
+                                        })
+                   <!--@@Html.DropDownListFor(m => m.Ingredients, new SelectList(Model.Ingredients.Name, "ID", "Name"), new {  @@id = "CategoryId" , @@class = "form-control chosen-select", @@multiple = "true" })-->
 
-        $('.chzn-select').chosen();
-    });
-</script>
+                  </div>
+             </div>
+    }
+
+
+    <script>
+      //  $('.chosen-select').chosen();
+        $(document).ready(function () {
+
+            $('.chzn-select').chosen();
+        });
+    </script>
+
 *@
+
+
 <html>
 <head>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -81,8 +99,6 @@
             $('#right').on('click', function () {
                 moveItems('#sbOne', '#sbTwo');
             });
-
-
         });
     </script>
 </head>
@@ -100,59 +116,59 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Item2.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Menu.Name, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(tuple => tuple.Item2.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(tuple => tuple.Item2.Name, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Menu.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Menu.Name, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <!--Here is where all the trouble lays-->
+            @Html.ListBoxFor(m => m.Ingredients, new SelectList(Model.Ingredients, "ID", "Name"), new { id = "sbOne", Size = 10 })
 
-            @Html.ListBoxFor(m => m.Item1, new SelectList(Model.Item1, "ID", "Name"), new { id = "sbOne", Size = 10  })
+            @Html.ListBoxFor(m => m.Menu, new SelectList("", new List<SelectListItem>()), new { id = "sbTwo", Size = 10 })
 
-            @Html.ListBoxFor(m => m.Item2, new SelectList("", new List<SelectListItem>()), new { id = "sbTwo", Size = 10 })
-
-
-            <input type="button" id="Values" value="What is the list?" onclick="myFunction()" />
-
-            <br />
-
-            <input type="button" id="left" value="<" />
-            <input type="button" id="right" value=">" />
-
-            <script>
-                function myFunction() {
-                    var options = document.getElementById("sbTwo");
-                    var optArray = [];
-                    for (var i = 0; i < options.length; i++) {
-                        optArray.push(options[i].text);
-                       
-                    }
-                    alert(optArray.join("\n"));
-                }
-                return optArray;
-            </script>
-
-
-
-
-            <!--This is where the button starts-->
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
         </div>
+                <input type="button" id="Values" value="Confirm Submission " onclick="myFunction()" />
+
+                <br />
+
+                <input type="button" id="left" value="<" />
+                <input type="button" id="right" value=">" />
+
+                <script>
+                    function myFunction() {
+                        var options = document.getElementById("sbTwo");
+                        var optArray = [];
+                        for (var i = 0; i < options.length; i++) {
+                            optArray.push(options[i].text);
+
+                        }
+                        alert(optArray.join("\n"));
+                        return optArray;
+                    }
+
+                </script>
     }
+
+
+
+    <!--This is where the create button is located-->
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
 </body>
 </html>
-
-
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>  
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
